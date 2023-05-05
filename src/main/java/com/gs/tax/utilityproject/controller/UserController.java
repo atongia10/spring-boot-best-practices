@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -48,5 +49,12 @@ public class UserController {
     public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
         UserDto createdUser = userService.save(userDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+    }
+
+    @GetMapping("/external")
+    public Mono<ResponseEntity<List<UserDto>>> getUsersFromExternalApi() {
+        return userService.fetchUsersFromExternalApi()
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 }

@@ -45,4 +45,11 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(ExternalApiException.class)
+    public ResponseEntity<ApiError> handleExternalApiException(ExternalApiException e) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_GATEWAY, e.getMessage());
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_GATEWAY);
+    }
+
 }
